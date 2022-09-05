@@ -6,11 +6,6 @@
 import Foundation
 
 // MARK: MODELO
-// Protocolo con requerimientos para usar el estacionamiento.
-protocol Parkable {
-    var plate: String { get }
-    var type: VehicleType { get }
-}
 
 // Modelo Estacionamiento.
 struct Parking {
@@ -22,7 +17,7 @@ struct Parking {
     mutating func checkInVehicle(_ vehicle: Vehicle, onFinish:
     (Bool) -> Void) {
         
-    // Insert vehicle here
+    // Insertar vehículo
         guard vehicles.count < capacity else {
             onFinish(false)
             return
@@ -111,6 +106,14 @@ enum VehicleType {
     }
 }
 
+// Protocolo con requerimientos para usar el estacionamiento.
+protocol Parkable {
+    var plate: String { get }
+    var type: VehicleType { get }
+    var checkInTime: Date { get }
+    var discountCard: String? { get }
+}
+
 // Modelo para vehículo.
 struct Vehicle: Parkable, Hashable {
     let plate: String
@@ -120,6 +123,7 @@ struct Vehicle: Parkable, Hashable {
     var hasDiscountCard: Bool {
         discountCard != nil
     }
+    
     var parkedTime: Int {
         let mins = Calendar.current.dateComponents([.minute], from:
         checkInTime, to: Date()).minute ?? 0
@@ -147,11 +151,11 @@ func checkInMessageIf(success: Bool) {
 }
 
 // Mensajes de éxito o error al hacer check-out de un vehículo
-var onSuccessMessage: (Int) -> (Void) = { fee in
+let onSuccessMessage: (Int) -> (Void) = { fee in
     print("Your fee is $\(fee)")
 }
 
-var onErrorMessage = {
+let onErrorMessage = {
     print("Sorry, the check-out failed.")
 }
 
